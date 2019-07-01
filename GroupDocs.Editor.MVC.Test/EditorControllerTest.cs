@@ -64,7 +64,7 @@ namespace GroupDocs.Editor.MVC.Test
                 var request = new SerialisableRequest
                 {
                     Method = "POST",
-                    RequestUri = "/loadfiletree",
+                    RequestUri = "/editor/loadfiletree",
                     Content = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestData)),
                     Headers = new Dictionary<string, string>{
                         { "Content-Type", "application/json"},
