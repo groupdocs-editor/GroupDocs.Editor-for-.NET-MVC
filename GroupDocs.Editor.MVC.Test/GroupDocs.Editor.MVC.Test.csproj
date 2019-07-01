@@ -9,8 +9,8 @@
     <ProjectGuid>{C8F2EDB6-BD6C-465F-B59F-2CEA33BD7FE6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GroupDocs.Total.MVC.Test</RootNamespace>
-    <AssemblyName>GroupDocs.Total.MVC.Test</AssemblyName>
+    <RootNamespace>GroupDocs.Editor.MVC.Test</RootNamespace>
+    <AssemblyName>GroupDocs.Editor.MVC.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
