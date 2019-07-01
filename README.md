@@ -1,9 +1,9 @@
-# GroupDocs.Total for .NET MVC Example
-###### version 0.4.20
+# GroupDocs.Editor for .NET MVC Example
+###### version 0.1.0
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kvkv1oswg5xfd6uq/branch/master?svg=true)](https://ci.appveyor.com/project/egorovpavel/groupdocs-total-for-net-mvc/branch/master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b5cf669acf9043888c8fc4a8d46abdc3)](https://www.codacy.com/app/GroupDocs/GroupDocs.Total-for-NET-MVC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupdocs-total/GroupDocs.Total-for-NET-MVC&amp;utm_campaign=Badge_Grade)
-[![GitHub license](https://img.shields.io/github/license/groupdocs-total/GroupDocs.Total-for-NET-MVC.svg)](https://github.com/groupdocs-total/GroupDocs.Total-for-NET-MVC/blob/master/LICENSE)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b5cf669acf9043888c8fc4a8d46abdc3)](https://www.codacy.com/app/GroupDocs/GroupDocs.Editor-for-NET-MVC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupdocs-total/GroupDocs.Editor-for-NET-MVC&amp;utm_campaign=Badge_Grade)
+[![GitHub license](https://img.shields.io/github/license/groupdocs-total/GroupDocs.Editor-for-NET-MVC.svg)](https://github.com/groupdocs-total/GroupDocs.Editor-for-NET-MVC/blob/master/LICENSE)
 
 ## System Requirements
 - .NET Framework 4.5
@@ -12,7 +12,7 @@
 
 ## All-in-one document manipulation API
 
-**GroupDocs.Total for .NET API** is a suite of powerful, flexible and high-performance libraries which allows you to manipulate documents within your desktop solutions and web apps without requiring any other commercial application. GroupDocs.Total allows you to perform all kinds of operations (view, edit, annotate, sign, compare, convert, merge, search, parse, redact, etc) with **PDF, DOCX, PPT, XLS**, and over 90 other document formats.
+**GroupDocs.Editor for .NET API** is a suite of powerful, flexible and high-performance libraries which allows you to manipulate documents within your desktop solutions and web apps without requiring any other commercial application. GroupDocs.Editor allows you to perform all kinds of operations (view, edit, annotate, sign, compare, convert, merge, search, parse, redact, etc) with **PDF, DOCX, PPT, XLS**, and over 90 other document formats.
 
 This web application demonstrates the following document manipulation capabilities:
 
@@ -21,7 +21,7 @@ This web application demonstrates the following document manipulation capabiliti
 - Digitally sign documents
 - Compare documents 
 
-**Note:** without a license application will run in trial mode, purchase [GroupDocs.Total for .NET license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Total for .NET temporary license](https://purchase.groupdocs.com/temporary-license).
+**Note:** without a license application will run in trial mode, purchase [GroupDocs.Editor for .NET license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Editor for .NET temporary license](https://purchase.groupdocs.com/temporary-license).
 
 ## Supported document Formats
 
@@ -173,10 +173,10 @@ You can run this sample by one of following methods
 
 #### Build from source
 
-Download [source code](https://github.com/groupdocs-total/GroupDocs.Total-for-NET-MVC/archive/master.zip) from github or clone this repository.
+Download [source code](https://github.com/groupdocs-total/GroupDocs.Editor-for-NET-MVC/archive/master.zip) from github or clone this repository.
 
 ```bash
-git clone https://github.com/groupdocs-total/GroupDocs.Total-for-NET-MVC
+git clone https://github.com/groupdocs-total/GroupDocs.Editor-for-NET-MVC
 ```
 
 Open solution in the VisualStudio.
@@ -202,18 +202,18 @@ The MIT License (MIT).
 
 Please have a look at the LICENSE.md for more details
 
-## GroupDocs Total on other platforms & frameworks
+## GroupDocs Editor on other platforms & frameworks
 
-- [GroupDocs.Total with JAVA Spring ](https://github.com/groupdocs-total/GroupDocs.Total-for-Java-Spring)
-- [GroupDocs.Total with JAVA Dropwizard ](https://github.com/groupdocs-total/GroupDocs.Total-for-Java-Dropwizard)
-- [GroupDocs.Total with .NET WebForms ](https://github.com/groupdocs-total/GroupDocs.Total-for-.NET-WebForms)
+- [GroupDocs.Editor with JAVA Spring ](https://github.com/groupdocs-total/GroupDocs.Editor-for-Java-Spring)
+- [GroupDocs.Editor with JAVA Dropwizard ](https://github.com/groupdocs-total/GroupDocs.Editor-for-Java-Dropwizard)
+- [GroupDocs.Editor with .NET WebForms ](https://github.com/groupdocs-total/GroupDocs.Editor-for-.NET-WebForms)
 
 ## Resources
 - **Website:** [www.groupdocs.com](http://www.groupdocs.com)
-- **Product Home:** [GroupDocs.Total for .NET](https://products.groupdocs.com/total/net)
-- **Product API References:** [GroupDocs.Total for .NET API](https://apireference.groupdocs.com)
-- **Download:** [Download GroupDocs.Total for .NET](https://downloads.groupdocs.com/total/net)
-- **Documentation:** [GroupDocs.Total for .NET Documentation](https://docs.groupdocs.com/dashboard.action)
-- **Free Support Forum:** [GroupDocs.Total for .NET Free Support Forum](https://forum.groupdocs.com/c/total)
-- **Paid Support Helpdesk:** [GroupDocs.Total for .NET Paid Support Helpdesk](https://helpdesk.groupdocs.com)
-- **Blog:** [GroupDocs.Total for .NET Blog](https://blog.groupdocs.com/category/groupdocs-total-product-family)
+- **Product Home:** [GroupDocs.Editor for .NET](https://products.groupdocs.com/total/net)
+- **Product API References:** [GroupDocs.Editor for .NET API](https://apireference.groupdocs.com)
+- **Download:** [Download GroupDocs.Editor for .NET](https://downloads.groupdocs.com/total/net)
+- **Documentation:** [GroupDocs.Editor for .NET Documentation](https://docs.groupdocs.com/dashboard.action)
+- **Free Support Forum:** [GroupDocs.Editor for .NET Free Support Forum](https://forum.groupdocs.com/c/total)
+- **Paid Support Helpdesk:** [GroupDocs.Editor for .NET Paid Support Helpdesk](https://helpdesk.groupdocs.com)
+- **Blog:** [GroupDocs.Editor for .NET Blog](https://blog.groupdocs.com/category/groupdocs-total-product-family)
