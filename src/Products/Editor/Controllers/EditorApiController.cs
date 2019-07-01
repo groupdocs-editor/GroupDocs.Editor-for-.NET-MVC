@@ -1,5 +1,4 @@
-﻿using GroupDocs.Editor;
-using GroupDocs.Editor.Options;
+﻿using GroupDocs.Editor.Options;
 using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
 using GroupDocs.Editor.MVC.Products.Common.Resources;
 using GroupDocs.Editor.MVC.Products.Common.Util.Comparator;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
