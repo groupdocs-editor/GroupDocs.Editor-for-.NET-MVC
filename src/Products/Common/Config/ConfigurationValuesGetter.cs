@@ -7,7 +7,7 @@ namespace GroupDocs.Editor.MVC.Products.Common.Config
 {
     public class ConfigurationValuesGetter
     {
-        private dynamic Configuration;
+        private readonly dynamic Configuration;
 
         public ConfigurationValuesGetter(dynamic configuration)
         {

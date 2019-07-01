@@ -14,8 +14,8 @@ namespace GroupDocs.Editor.MVC.Products.Common.Config
     /// </summary>
     public class ApplicationConfiguration
     {
-        public string LicensePath = "Licenses";
-
+        private static string LicensePath = "Licenses";
+        
         /// <summary>
         /// Get license path from the application configuration section of the web.config
         /// </summary>
@@ -55,6 +55,11 @@ namespace GroupDocs.Editor.MVC.Products.Common.Config
                 && path.IndexOfAny(System.IO.Path.GetInvalidPathChars().ToArray()) == -1
                 && Path.IsPathRooted(path)
                 && !Path.GetPathRoot(path).Equals(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal);
+        }
+
+        public string GetLicensePath()
+        {
+            return LicensePath;
         }
     }
 }

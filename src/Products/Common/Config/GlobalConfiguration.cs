@@ -7,9 +7,9 @@ namespace GroupDocs.Editor.MVC.Products.Common.Config
     /// </summary>
     public class GlobalConfiguration
     {
-        public ServerConfiguration Server;
-        public ApplicationConfiguration Application;
-        public CommonConfiguration Common;        
+        private readonly ServerConfiguration Server;
+        private readonly ApplicationConfiguration Application;
+        private readonly CommonConfiguration Common;        
         private readonly EditorConfiguration Editor;
 
         /// <summary>
@@ -26,6 +26,21 @@ namespace GroupDocs.Editor.MVC.Products.Common.Config
         public EditorConfiguration GetEditorConfiguration()
         {
             return Editor;
+        }
+
+        public ServerConfiguration GetServerConfiguration()
+        {
+            return Server;
+        }
+
+        public ApplicationConfiguration GetApplicationConfiguration()
+        {
+            return Application;
+        }
+
+        public CommonConfiguration GetCommonConfiguration()
+        {
+            return Common;
         }
     }
 }

@@ -46,9 +46,9 @@ namespace GroupDocs.Editor.MVC.Products.Common.Resources
                     resultFileName = fileName;
                 }
             }
-            catch (System.Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
             return resultFileName;
         }
