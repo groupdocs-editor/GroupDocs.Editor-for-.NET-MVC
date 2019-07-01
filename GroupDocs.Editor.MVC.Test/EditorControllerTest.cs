@@ -12,8 +12,8 @@ using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
 namespace GroupDocs.Editor.MVC.Test
 {
     [TestFixture]
-    public class EditorControllerTest
-    {       
+    public static class EditorControllerTest {
+       
 
         [SetUp]
         public static void TestInitialize()
