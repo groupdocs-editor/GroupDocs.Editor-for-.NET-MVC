@@ -32,7 +32,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// </summary>       
         /// <returns>Editor configuration</returns>
         [HttpGet]
-        [Route("loadConfig")]
+        [Route("editor/loadConfig")]
         public EditorConfiguration LoadConfig()
         {
             return globalConfiguration.GetEditorConfiguration();
@@ -44,7 +44,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>List of files and directories</returns>
         [HttpPost]
-        [Route("loadFileTree")]
+        [Route("editor/loadFileTree")]
         public HttpResponseMessage loadFileTree(PostedDataEntity postedData)
         {
             // get request body       
@@ -109,7 +109,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// </summary>       
         /// <returns>Editor configuration</returns>
         [HttpGet]
-        [Route("loadFormats")]
+        [Route("editor/loadFormats")]
         public List<string> LoadFormats()
         {
             return PrepareFormats();
@@ -121,7 +121,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Document info object</returns>
         [HttpPost]
-        [Route("loadDocumentDescription")]
+        [Route("editor/loadDocumentDescription")]
         public HttpResponseMessage LoadDocumentDescription(PostedDataEntity postedData)
         {
             string password = "";
@@ -169,7 +169,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="path">Path of the document to download</param>
         /// <returns>Document stream as attachement</returns>
         [HttpGet]
-        [Route("downloadDocument")]
+        [Route("editor/downloadDocument")]
         public HttpResponseMessage DownloadDocument(string path)
         {
             if (!string.IsNullOrEmpty(path))
@@ -194,7 +194,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Uploaded document object</returns>
         [HttpPost]
-        [Route("uploadDocument")]
+        [Route("editor/uploadDocument")]
         public HttpResponseMessage UploadDocument()
         {
             try
@@ -264,7 +264,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Document info object</returns>
         [HttpPost]
-        [Route("saveFile")]
+        [Route("editor/saveFile")]
         public HttpResponseMessage SaveFile(LoadDocumentEntity postedData)
         {
             string password ="";
