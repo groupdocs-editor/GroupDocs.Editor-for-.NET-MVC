@@ -16,19 +16,19 @@ namespace GroupDocs.Editor.MVC.Test
     {       
 
         [SetUp]
-        public void TestInitialize()
+        public static void TestInitialize()
         {
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         [TearDown]
-        public void TearDown()
+        public static void TearDown()
         {
             RouteTable.Routes.Clear();
         }
 
         [Test]
-        public void ViewStatusTest()
+        public static void ViewStatusTest()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + "/../../../src";
             using (var server = new DirectServer(path))
@@ -46,13 +46,13 @@ namespace GroupDocs.Editor.MVC.Test
         }
 
         [Test]
-        public void ViewMapControllerTest()
+        public static void ViewMapControllerTest()
         {
             "~/editor".Route().ShouldMapTo<EditorController>(x => x.Index());
         }
 
         [Test]
-        public void FileTreeStatusCodeTest()
+        public static void FileTreeStatusCodeTest()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + "/../../../src";
             using (var server = new DirectServer(path))
