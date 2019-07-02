@@ -9,7 +9,7 @@ namespace GroupDocs.Editor.MVC.Products.Common.Resources
     /// Resources
     /// </summary>
     public class Resources
-    {        
+    {
         /// <summary>
         /// Get free file name for uploaded file if such file already exists
         /// </summary>
@@ -19,36 +19,29 @@ namespace GroupDocs.Editor.MVC.Products.Common.Resources
         public static string GetFreeFileName(string directory, string fileName)
         {
             string resultFileName = "";
-            try
+            // get all files from the directory
+            string[] listOfFiles = Directory.GetFiles(directory);
+            if (listOfFiles.Length > 0)
             {
-                // get all files from the directory
-                string[] listOfFiles = Directory.GetFiles(directory);
-                if (listOfFiles.Length > 0)
+                for (int i = 0; i < listOfFiles.Length; i++)
                 {
-                    for (int i = 0; i < listOfFiles.Length; i++)
+                    // check if file with current name already exists
+                    int number = i + 1;
+                    string newFileName = Path.GetFileNameWithoutExtension(fileName) + "-Copy(" + number + ")" + Path.GetExtension(fileName);
+                    resultFileName = Path.Combine(directory, newFileName);
+                    if (File.Exists(resultFileName))
                     {
-                        // check if file with current name already exists
-                        int number = i + 1;
-                        string newFileName = Path.GetFileNameWithoutExtension(fileName) + "-Copy(" + number + ")" + Path.GetExtension(fileName);
-                        resultFileName = Path.Combine(directory, newFileName);
-                        if (File.Exists(resultFileName))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        continue;
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
-                else
-                {
-                    resultFileName = fileName;
-                }
             }
-            catch
+            else
             {
-                throw;
+                resultFileName = fileName;
             }
             return resultFileName;
         }

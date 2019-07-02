@@ -222,6 +222,7 @@
     <Compile Include="Products\Editor\Config\EditorConfiguration.cs" />
     <Compile Include="Products\Editor\Controllers\EditorApiController.cs" />
     <Compile Include="Products\Common\Entity\Web\PostedDataEntity.cs" />
+    <Compile Include="Products\Editor\Entity\Web\Request\EditDocumentRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
