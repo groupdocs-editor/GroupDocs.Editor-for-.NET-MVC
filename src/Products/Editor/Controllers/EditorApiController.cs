@@ -31,7 +31,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// </summary>       
         /// <returns>Editor configuration</returns>
         [HttpGet]
-        [Route("editor/loadConfig")]
+        [Route("loadConfig")]
         public EditorConfiguration LoadConfig()
         {
             return globalConfiguration.GetEditorConfiguration();
@@ -43,7 +43,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>List of files and directories</returns>
         [HttpPost]
-        [Route("editor/loadFileTree")]
+        [Route("loadFileTree")]
         public HttpResponseMessage loadFileTree(PostedDataEntity postedData)
         {
             // get request body       
@@ -108,7 +108,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// </summary>       
         /// <returns>Editor configuration</returns>
         [HttpGet]
-        [Route("editor/loadFormats")]
+        [Route("loadFormats")]
         public List<string> LoadFormats()
         {
             return PrepareFormats();
@@ -120,7 +120,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Document info object</returns>
         [HttpPost]
-        [Route("editor/loadDocumentDescription")]
+        [Route("loadDocumentDescription")]
         public HttpResponseMessage LoadDocumentDescription(PostedDataEntity postedData)
         {
             try
@@ -142,7 +142,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="path">Path of the document to download</param>
         /// <returns>Document stream as attachement</returns>
         [HttpGet]
-        [Route("editor/downloadDocument")]
+        [Route("downloadDocument")]
         public HttpResponseMessage DownloadDocument(string path)
         {
             if (!string.IsNullOrEmpty(path))
@@ -167,7 +167,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Uploaded document object</returns>
         [HttpPost]
-        [Route("editor/uploadDocument")]
+        [Route("uploadDocument")]
         public HttpResponseMessage UploadDocument()
         {
             try
@@ -237,7 +237,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         /// <param name="postedData">Post data</param>
         /// <returns>Document info object</returns>
         [HttpPost]
-        [Route("editor/saveFile")]
+        [Route("saveFile")]
         public HttpResponseMessage SaveFile(EditDocumentRequest postedData)
         {
             try
