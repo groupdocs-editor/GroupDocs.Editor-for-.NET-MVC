@@ -6,16 +6,19 @@
 <head>
     <meta charset="utf-8" />
     <title>Editor for .NET MVC</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="resources/angular/editor/dist/assets/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="resources/editor/favicon.ico" />
 </head>
 <body>
-    <gd-editor-angular-root></gd-editor-angular-root>
-    <script type="text/javascript" src="resources/angular/editor/dist/runtime.js"></script>
-    <script type="text/javascript" src="resources/angular/editor/dist/es2015-polyfills.js" nomodule></script>
-    <script type="text/javascript" src="resources/angular/editor/dist/polyfills.js"></script>
-    <script type="text/javascript" src="resources/angular/editor/dist/styles.js"></script>
-    <script type="text/javascript" src="resources/angular/editor/dist/scripts.js"></script>    
-    <script type="text/javascript" src="resources/angular/editor/dist/main.js"></script>
+    <client-root></client-root>
+    <script src="resources/editor/runtime-es2015.js" type="module"></script>
+    <script src="resources/editor/runtime-es5.js" nomodule></script>
+    <script src="resources/editor/polyfills-es2015.js" type="module"></script>
+    <script src="resources/editor/polyfills-es5.js" nomodule></script>
+    <script src="resources/editor/styles-es2015.js" type="module"></script>
+    <script src="resources/editor/styles-es5.js" nomodule></script>
+    <script src="resources/editor/vendor-es2015.js" type="module"></script>
+    <script src="resources/editor/vendor-es5.js" nomodule></script>
+    <script src="resources/editor/main-es2015.js" type="module"></script>
+    <script src="resources/editor/main-es5.js" nomodule></script>
 </body>
 </html>
