@@ -1,3 +1,4 @@
+.DS_Store
 /packages
 /.vs
 /src/GroupDocs.Total.MVC.csproj.user
@@ -17,3 +18,7 @@ src/package-lock.json
 /src/node_modules
 /GroupDocs.Editor.MVC.Test/obj
 /GroupDocs.Editor.MVC.Test/bin
+src/DocumentSamples
+!src/DocumentSamples/Editor/.gitkeep
+src/Licenses
+!src/Licenses/.gitkeep
