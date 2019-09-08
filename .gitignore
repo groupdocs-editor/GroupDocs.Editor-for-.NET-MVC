@@ -1,24 +1,33 @@
-.DS_Store
-/packages
-/.vs
-bin
-obj
-/App_Data/temp
-/App_Data/Output
-/App_Data/SignatureData
-/src/GroupDocs.Editor.MVC.csproj.user
+# Tool Runtime Dir
+packages/
+node_modules/
+
+# Visual Studio
+.vs/
+
+# User-specific files
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.zip
+package-lock.json
+
+# Resources
 src/Resources/*
 !src/Resources/.gitkeep
-node_modules
-src/package-lock.json
-/src/node 
-/GroupDocs.Editor.MVC.Test/GroupDocs.Editor.MVC.Test.csproj.user
-/GroupDocs.Editor.MVC.Test/bin
-/GroupDocs.Editor.MVC.Test/obj
-/src/node_modules
-src/DocumentSamples
-!src/DocumentSamples/Editor/.gitkeep
+
+# Licenses
 src/Licenses
 !src/Licenses/.gitkeep
-/src/node
-/src/client/package-lock.json
+
+# Document samples
+src/DocumentSamples
+!src/DocumentSamples/.gitkeep
+
+# Git
+!.gitkeep
+
+# Finder in OSX
+.DS_Store
