@@ -257,6 +257,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(postedData.GetGuid()))
                 {
                     dynamic saveOptions = GetSaveOptions(saveFilePath);
+                    saveOptions.Password = postedData.getPassword();
                     EditableDocument htmlContentDoc = EditableDocument.FromMarkup(htmlContent, null);
 
                     using (FileStream outputStream = File.Create(tempPath))
@@ -279,7 +280,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             catch (Exception ex)
             {
                 // set exception message
-                return Request.CreateResponse(HttpStatusCode.Forbidden, new Resources().GenerateException(ex, postedData.getPassword()));
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new Resources().GenerateException(ex, postedData.getPassword()));
             }
         }
 
@@ -467,8 +468,6 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 // Instantiate Editor object by loading the input file
                 using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
                 {
-                    PageDescriptionEntity pageData = new PageDescriptionEntity();
-
                     // Open input document for edit — obtain an intermediate document, that can be edited
                     EditableDocument beforeEdit = editor.Edit();
 
@@ -476,7 +475,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                     // are embedded inside this string along with main textual content
                     string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
 
-                    loadDocumentEntity.SetGuid(Path.GetFileName(guid));
+                    loadDocumentEntity.SetGuid(guid);
                     PageDescriptionEntity page = new PageDescriptionEntity();
                     page.SetData(allEmbeddedInsideString);
                     loadDocumentEntity.SetPages(page);
