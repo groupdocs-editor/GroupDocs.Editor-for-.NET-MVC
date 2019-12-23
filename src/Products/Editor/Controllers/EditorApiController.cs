@@ -256,8 +256,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
                 using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(postedData.GetGuid()))
                 {
-                    dynamic saveOptions = GetSaveOptions(saveFilePath);
-                    saveOptions.Password = postedData.getPassword();
+                    ISaveOptions saveOptions = GetSaveOptions(saveFilePath);
                     EditableDocument htmlContentDoc = EditableDocument.FromMarkup(htmlContent, null);
 
                     using (FileStream outputStream = File.Create(tempPath))
@@ -354,7 +353,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             return format;
         }
 
-        private dynamic GetSaveOptions(string saveFilePath)
+        private ISaveOptions GetSaveOptions(string saveFilePath)
         {
             string extension = Path.GetExtension(saveFilePath).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
@@ -364,7 +363,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 extension = "Text";
             }
 
-            dynamic options = null;
+            ISaveOptions options = null;
 
             foreach (var item in typeof(WordProcessingFormats).GetFields())
             {
@@ -388,7 +387,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             return options;
         }
 
-        private dynamic GetLoadOptions(string guid)
+        private ILoadOptions GetLoadOptions(string guid)
         {
             string extension = Path.GetExtension(guid).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
@@ -398,7 +397,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 extension = "Text";
             }
 
-            dynamic options = null;
+            ILoadOptions options = null;
 
             foreach (var item in typeof(WordProcessingFormats).GetFields())
             {
@@ -459,38 +458,29 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
         private LoadDocumentEntity LoadDocument(string guid, string password)
         {
-            try
+            LoadDocumentEntity loadDocumentEntity = new LoadDocumentEntity();
+            ILoadOptions loadOptions = GetLoadOptions(guid);
+            loadOptions.Password = password;
+
+            // Instantiate Editor object by loading the input file
+            using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
             {
-                LoadDocumentEntity loadDocumentEntity = new LoadDocumentEntity();
-                dynamic loadOptions = GetLoadOptions(guid);
-                loadOptions.Password = password;
+                // Open input document for edit — obtain an intermediate document, that can be edited
+                EditableDocument beforeEdit = editor.Edit();
 
-                // Instantiate Editor object by loading the input file
-                using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
-                {
-                    // Open input document for edit — obtain an intermediate document, that can be edited
-                    EditableDocument beforeEdit = editor.Edit();
+                // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
+                // are embedded inside this string along with main textual content
+                string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
 
-                    // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
-                    // are embedded inside this string along with main textual content
-                    string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
+                loadDocumentEntity.SetGuid(guid);
+                PageDescriptionEntity page = new PageDescriptionEntity();
+                page.SetData(allEmbeddedInsideString);
+                loadDocumentEntity.SetPages(page);
 
-                    loadDocumentEntity.SetGuid(guid);
-                    PageDescriptionEntity page = new PageDescriptionEntity();
-                    page.SetData(allEmbeddedInsideString);
-                    loadDocumentEntity.SetPages(page);
-
-                    // Dispose both EditableDocument instances
-                    beforeEdit.Dispose();
-                    editor.Dispose();
-                }
-
-                return loadDocumentEntity;
+                beforeEdit.Dispose();
             }
-            catch
-            {
-                throw;
-            }
+
+            return loadDocumentEntity;
         }
     }
 }
