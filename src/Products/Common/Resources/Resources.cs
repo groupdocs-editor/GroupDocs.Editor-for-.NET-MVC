@@ -72,7 +72,7 @@ namespace GroupDocs.Editor.MVC.Products.Common.Resources
             // Initiate exception
             ExceptionEntity exceptionEntity = new ExceptionEntity();
             // Check if exception message contains password and password is empty
-            if (ex.Message.ToLower().Contains("password") && String.IsNullOrEmpty(password))
+            if (ex.Message.Contains("password") && String.IsNullOrEmpty(password))
             {
                 exceptionEntity.message = "Password Required";
             }
