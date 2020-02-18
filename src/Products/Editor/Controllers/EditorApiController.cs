@@ -437,7 +437,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
                 if (options is SpreadsheetToHtmlOptions)
                 {
-                    options.TextOptions = options.TextLoadOptions(",");
+                    options.TextOptions = new SpreadsheetToHtmlOptions.TextLoadOptions(",");
                 }
                 else
                 {
