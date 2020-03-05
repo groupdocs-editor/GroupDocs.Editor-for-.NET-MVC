@@ -1,80 +1,55 @@
-﻿using GroupDocs.Editor.MVC.Controllers;
-using NUnit.Framework;
-using System.Web.Routing;
-using MvcContrib.TestHelper;
-using Huygens;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
 using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
+using GroupDocs.Editor.MVC.Products.Editor.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using NUnit.Framework;
 
-namespace GroupDocs.Editor.MVC.Test
+namespace NUnitTestProject1
 {
-    [TestFixture]
-    public static class EditorControllerTest {
-       
+    public class EditorControllerTest
+    {
+        Mock<IConfigurationSection> mockServerConfSection;
+        Mock<IConfigurationSection> mockCommonConfSection;
+        Mock<IConfiguration> mockConfig;
+        Mock<PostedDataEntity> mockPostedData;
+        EditorApiController controller;
 
         [SetUp]
-        public static void TestInitialize()
+        public void Setup()
         {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-        }
+            mockServerConfSection = new Mock<IConfigurationSection>();
+            mockServerConfSection.SetupGet(m => m[It.Is<string>(s => s == "HttpPort")]).Returns("8080");
 
-        [TearDown]
-        public static void TearDown()
-        {
-            RouteTable.Routes.Clear();
-        }
+            mockCommonConfSection = new Mock<IConfigurationSection>();
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsPageSelector")]).Returns("true");
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsDownload")]).Returns("true");
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsUpload")]).Returns("true");
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsPrint")]).Returns("true");
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsBrowse")]).Returns("true");
+            mockCommonConfSection.SetupGet(m => m[It.Is<string>(s => s == "IsRewrite")]).Returns("true");
 
-        [Test]
-        public static void ViewStatusTest()
-        {
-            string path = AppDomain.CurrentDomain.BaseDirectory + "/../../../src";
-            using (var server = new DirectServer(path))
-            {
-                var request = new SerialisableRequest
-                {
-                    Method = "GET",
-                    RequestUri = "/editor",
-                    Content = null
-                };
+            mockConfig = new Mock<IConfiguration>();
+            mockConfig.Setup(a => a.GetSection(It.Is<string>(s => s == "ServerConfiguration"))).Returns(mockServerConfSection.Object);
+            mockConfig.Setup(a => a.GetSection(It.Is<string>(s => s == "CommonConfiguration"))).Returns(mockCommonConfSection.Object);
 
-                var result = server.DirectCall(request);
-                Assert.That(result.StatusCode, Is.EqualTo(200));
-            }
+            mockPostedData = new Mock<PostedDataEntity>();
+            controller = new EditorApiController(mockConfig.Object);
         }
 
         [Test]
-        public static void ViewMapControllerTest()
+        public void LoadFileTree_ReturnsOkActionResult()
         {
-            "~/editor".Route().ShouldMapTo<EditorController>(x => x.Index());
+            // Arrange
+
+
+            // Act
+            var result = controller.loadFileTree(mockPostedData.Object);
+            var okResult = result as OkObjectResult;
+
+            // Assert
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
         }
-
-        [Test]
-        public static void FileTreeStatusCodeTest()
-        {
-            string path = AppDomain.CurrentDomain.BaseDirectory + "/../../../src";
-            using (var server = new DirectServer(path))
-            {
-
-                PostedDataEntity requestData = new PostedDataEntity();
-                requestData.path = "";
-
-                var request = new SerialisableRequest
-                {
-                    Method = "POST",
-                    RequestUri = "/loadfiletree",
-                    Content = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestData)),
-                    Headers = new Dictionary<string, string>{
-                        { "Content-Type", "application/json"},
-                        { "Content-Length", JsonConvert.SerializeObject(requestData).Length.ToString()}
-                    }
-                };
-
-                var result = server.DirectCall(request);
-                Assert.That(result.StatusCode, Is.EqualTo(200));
-            }
-        }        
     }
 }

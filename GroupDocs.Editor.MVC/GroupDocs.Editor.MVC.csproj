@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="client\**" />
+    <Compile Remove="DocumentSamples\**" />
+    <Content Remove="client\**" />
+    <Content Remove="DocumentSamples\**" />
+    <EmbeddedResource Remove="client\**" />
+    <EmbeddedResource Remove="DocumentSamples\**" />
+    <None Remove="client\**" />
+    <None Remove="DocumentSamples\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GroupDocs.Editor" Version="20.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+    <PackageReference Include="Node-Kit" Version="11.1.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="YamlDotNet.NetCore" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <Target Name="GenerateSomeFiles" BeforeTargets="BeforeBuild">
+    <Message Importance="High" Text="BeforeBuild" />
+    <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit\11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit\11.1.0.1\npm\bin\npm-cli.js install" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit\11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit\11.1.0.1\npm\bin\npm-cli.js run build  --scripts-prepend-node-path" Condition=" '$(OS)' == 'Windows_NT' " />
+    <ItemGroup>
+      <Compile Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

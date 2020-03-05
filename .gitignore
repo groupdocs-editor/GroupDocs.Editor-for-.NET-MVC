@@ -6,25 +6,40 @@ node_modules/
 .vs/
 
 # User-specific files
+*.suo
 *.user
+*.userosscache
+*.sln.docstates
 
 # Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
 [Bb]in/
 [Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
 *.zip
 package-lock.json
 
 # Resources
-src/Resources/*
-!src/Resources/.gitkeep
+Resources/*
+!Resources/.gitkeep
 
 # Licenses
-src/Licenses
-!src/Licenses/.gitkeep
+Licenses
+!Licenses/.gitkeep
 
 # Document samples
-src/DocumentSamples
-!src/DocumentSamples/.gitkeep
+DocumentSamples
+!DocumentSamples/.gitkeep
 
 # Git
 !.gitkeep
