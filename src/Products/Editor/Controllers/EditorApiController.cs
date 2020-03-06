@@ -249,12 +249,13 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             {
                 string htmlContent = postedData.getContent(); // Initialize with HTML markup of the edited document
                 string guid = postedData.GetGuid();
+                string password = postedData.getPassword();
                 string saveFilePath = Path.Combine(globalConfiguration.GetEditorConfiguration().GetFilesDirectory(), guid);
                 string tempFilename = Path.GetFileNameWithoutExtension(saveFilePath) + "_tmp";
                 string tempPath = Path.Combine(Path.GetDirectoryName(saveFilePath), tempFilename + Path.GetExtension(saveFilePath));
 
                 ILoadOptions loadOptions = GetLoadOptions(guid);
-                loadOptions.Password = postedData.getPassword();
+                loadOptions.Password = password;
 
                 // Instantiate Editor object by loading the input file
                 using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
@@ -272,7 +273,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                     {
                         EditableDocument htmlContentDoc = EditableDocument.FromMarkup(htmlContent, null);
                         dynamic saveOptions = GetSaveOptions(guid);
-                        saveOptions.Password = postedData.getPassword();
+                        saveOptions.Password = password;
 
                         if (saveOptions is WordProcessingSaveOptions)
                         {
@@ -293,7 +294,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
                 File.Move(tempPath, saveFilePath);
 
-                LoadDocumentEntity loadDocumentEntity = LoadDocument(saveFilePath, postedData.getPassword());
+                LoadDocumentEntity loadDocumentEntity = LoadDocument(saveFilePath, password);
                 // return document description
                 return Request.CreateResponse(HttpStatusCode.OK, loadDocumentEntity);
             }

@@ -1,5 +1,6 @@
 ﻿using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace GroupDocs.Editor.MVC.Products.Common.Resources
@@ -71,12 +72,12 @@ namespace GroupDocs.Editor.MVC.Products.Common.Resources
             // Initiate exception
             ExceptionEntity exceptionEntity = new ExceptionEntity();
             // Check if exception message contains password and password is empty
-            if (ex.Message.ToLower().Contains("password") && String.IsNullOrEmpty(password))
+            if (ex.Message.ToLower(CultureInfo.InvariantCulture).Contains("password") && String.IsNullOrEmpty(password))
             {
                 exceptionEntity.message = "Password Required";
             }
             // Check if exception contains password and password is set
-            else if (ex.Message.ToLower().Contains("password") && !String.IsNullOrEmpty(password))
+            else if (ex.Message.ToLower(CultureInfo.InvariantCulture).Contains("password") && !String.IsNullOrEmpty(password))
             {
                 exceptionEntity.message = "Incorrect password";
             }
