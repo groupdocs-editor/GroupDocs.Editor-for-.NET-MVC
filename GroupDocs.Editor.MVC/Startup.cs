@@ -46,6 +46,8 @@ namespace GroupDocs.Editor.MVC
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UsePathBase("/editor");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,8 +64,8 @@ namespace GroupDocs.Editor.MVC
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
-                    RequestPath = "/Resources"
+                Path.Combine(Directory.GetCurrentDirectory(), "resources")),
+                    RequestPath = "/resources"
             });
 
             app.UseRouting();

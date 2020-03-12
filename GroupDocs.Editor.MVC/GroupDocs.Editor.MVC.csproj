@@ -29,8 +29,10 @@
 
   <Target Name="GenerateSomeFiles" BeforeTargets="BeforeBuild">
     <Message Importance="High" Text="BeforeBuild" />
+    <Exec WorkingDirectory="client\" Command="..\..\packages\node-kit\11.1.0.1\node\linux\node ..\..\packages\node-kit\11.1.0.1\npm\bin\npm-cli.js install" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' " />
+    <Exec WorkingDirectory="client\" Command="..\..\packages\node-kit\11.1.0.1\node\linux\node ..\..\packages\node-kit\11.1.0.1\npm\bin\npm-cli.js run build-linux  --scripts-prepend-node-path" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' " />
     <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit\11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit\11.1.0.1\npm\bin\npm-cli.js install" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit\11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit\11.1.0.1\npm\bin\npm-cli.js run build  --scripts-prepend-node-path" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit\11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit\11.1.0.1\npm\bin\npm-cli.js run build-win  --scripts-prepend-node-path" Condition=" '$(OS)' == 'Windows_NT' " />
     <ItemGroup>
       <Compile Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
     </ItemGroup>

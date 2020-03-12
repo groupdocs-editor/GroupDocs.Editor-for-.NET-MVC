@@ -30,11 +30,11 @@ msbuild.wrn
 package-lock.json
 
 # Resources
-Resources/*
-!Resources/.gitkeep
+[Rr]esources/
+![Rr]esources/.gitkeep
 
 # Licenses
-Licenses
+Licenses/
 !Licenses/.gitkeep
 
 # Document samples
