@@ -106,12 +106,4 @@ Please have a look at the LICENSE.md for more details
 - JAVA Spring boot [Document Editor](https://github.com/groupdocs-Editor/GroupDocs.Editor-for-Java-Spring)
 - .NET WebForms [Document Editor](https://github.com/groupdocs-Editor/GroupDocs.Editor-for-.NET-WebForms)
 
-## Resources
-- **Website:** [www.groupdocs.com](http://www.groupdocs.com)
-- **Product Home:** [GroupDocs.Editor for .NET](https://products.groupdocs.com/Editor/net)
-- **Product API References:** [GroupDocs.Editor for .NET API](https://apireference.groupdocs.com/net/Editor)
-- **Download:** [Download GroupDocs.Editor for .NET](http://downloads.groupdocs.com/Editor/net)
-- **Documentation:** [GroupDocs.Editor for .NET Documentation](https://docs.groupdocs.com/display/Editornet/Home)
-- **Free Support Forum:** [GroupDocs.Editor for .NET Free Support Forum](https://forum.groupdocs.com/c/Editor)
-- **Paid Support Helpdesk:** [GroupDocs.Editor for .NET Paid Support Helpdesk](https://helpdesk.groupdocs.com)
-- **Blog:** [GroupDocs.Editor for .NET Blog](https://blog.groupdocs.com/category/groupdocs-Editor-product-family/)
+[Home](https://www.groupdocs.com/) | [Product Page](https://products.groupdocs.com/editor/net) | [Documentation](https://docs.groupdocs.com/editor/net/) | [Demo](https://products.groupdocs.app/editor/family) | [API Reference](https://apireference.groupdocs.com/editor/net) | [Examples](https://github.com/groupdocs-editor/GroupDocs.Editor-for-.NET) | [Blog](https://blog.groupdocs.com/category/editor/) | [Free Support](https://blog.groupdocs.com/category/editor/) | [Temporary License](https://purchase.groupdocs.com/temporary-license)
