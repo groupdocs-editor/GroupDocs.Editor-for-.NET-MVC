@@ -282,8 +282,6 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                     if (saveOptions is WordProcessingSaveOptions)
                     {
                         saveOptions.EnablePagination = true;
-                        saveOptions.FontExtraction = FontExtractionOptions.ExtractEmbeddedWithoutSystem;
-                        saveOptions.EnableLanguageInformation = true;
                     }
 
                     using (FileStream outputStream = File.Create(tempPath))
