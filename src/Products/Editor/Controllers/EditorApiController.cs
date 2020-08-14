@@ -335,8 +335,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                         dynamic saveOptions = this.GetSaveOptions(saveFilePath);
                         if (saveOptions is WordProcessingSaveOptions)
                         {
-                            // TODO: leads to exception
-                            //saveOptions.EnablePagination = true;
+                            // TODO: saveOptions.EnablePagination = true here leads to exception
                         }
 
                         using (FileStream outputStream = File.Create(tempPath))
@@ -638,8 +637,6 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 {
                     editOptions.EnablePagination = true;
                 }
-
-                IDocumentInfo documentInfo = editor.GetDocumentInfo(password);
 
                 // Open input document for edit — obtain an intermediate document, that can be edited
                 EditableDocument beforeEdit = editor.Edit(editOptions);
