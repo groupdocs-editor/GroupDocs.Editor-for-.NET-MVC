@@ -589,32 +589,28 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             List<string> outputListItems = new List<string>();
 
-            foreach (var item in typeof(WordProcessingFormats).GetFields())
+            using (IEnumerator<WordProcessingFormats> sequenceEnum = WordProcessingFormats.All.GetEnumerator())
             {
-                if (item.Name.Equals("Auto"))
+                while (sequenceEnum.MoveNext())
                 {
-                    continue;
-                }
-
-                if (item.Name.Equals("Text"))
-                {
-                    outputListItems.Add("Txt");
-                }
-
-                else
-                {
-                    outputListItems.Add(item.Name);
+                    outputListItems.Add(sequenceEnum.Current.Extension);
                 }
             }
 
-            foreach (var item in typeof(SpreadsheetFormats).GetFields())
+            using (IEnumerator<SpreadsheetFormats> sequenceEnum = SpreadsheetFormats.All.GetEnumerator())
             {
-                if (item.Name.Equals("Auto"))
+                while (sequenceEnum.MoveNext())
                 {
-                    continue;
+                    outputListItems.Add(sequenceEnum.Current.Extension);
                 }
+            }
 
-                outputListItems.Add(item.Name);
+            using (IEnumerator<PresentationFormats> sequenceEnum = PresentationFormats.All.GetEnumerator())
+            {
+                while (sequenceEnum.MoveNext())
+                {
+                    outputListItems.Add(sequenceEnum.Current.Extension);
+                }
             }
 
             return outputListItems;
