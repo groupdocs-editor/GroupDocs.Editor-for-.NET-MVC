@@ -1,4 +1,5 @@
 ﻿using GroupDocs.Editor.Formats;
+using GroupDocs.Editor.HtmlCss.Resources;
 using GroupDocs.Editor.Metadata;
 using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
 using GroupDocs.Editor.MVC.Products.Common.Resources;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -613,12 +615,13 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 }
             }
 
-            return outputListItems;
+            return outputListItems.Distinct().ToList();
         }
 
         private LoadDocumentEntity LoadDocument(string guid, string password)
         {
             LoadDocumentEntity loadDocumentEntity = new LoadDocumentEntity();
+            loadDocumentEntity.SetGuid(guid);
             ILoadOptions loadOptions = GetLoadOptions(guid);
             if (loadOptions != null)
             {
@@ -628,25 +631,40 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             // Instantiate Editor object by loading the input file
             using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
             {
+                IDocumentInfo documentInfo = editor.GetDocumentInfo(password);
+
                 dynamic editOptions = GetEditOptions(guid);
                 if (editOptions is WordProcessingEditOptions)
                 {
                     editOptions.EnablePagination = true;
+
+                    // Open input document for edit — obtain an intermediate document, that can be edited
+                    EditableDocument beforeEdit = editor.Edit(editOptions);
+                    string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
+                    PageDescriptionEntity page = new PageDescriptionEntity();
+                    page.SetData(allEmbeddedInsideString);
+                    loadDocumentEntity.SetPages(page);
+                    beforeEdit.Dispose();
                 }
+                else if (editOptions is SpreadsheetEditOptions)
+                {
+                    for (var i = 0; i < documentInfo.PageCount; i++)
+                    {
+                        // Let's create an intermediate EditableDocument from the i tab
+                        SpreadsheetEditOptions sheetEditOptions = new SpreadsheetEditOptions();
+                        sheetEditOptions.WorksheetIndex = i; // index is 0-based
+                        EditableDocument tabBeforeEdit = editor.Edit(sheetEditOptions);
 
-                // Open input document for edit — obtain an intermediate document, that can be edited
-                EditableDocument beforeEdit = editor.Edit(editOptions);
-
-                // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
-                // are embedded inside this string along with main textual content
-                string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
-
-                loadDocumentEntity.SetGuid(guid);
-                PageDescriptionEntity page = new PageDescriptionEntity();
-                page.SetData(allEmbeddedInsideString);
-                loadDocumentEntity.SetPages(page);
-
-                beforeEdit.Dispose();
+                        // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
+                        // are embedded inside this string along with main textual content
+                        string allEmbeddedInsideString = tabBeforeEdit.GetEmbeddedHtml();
+                        PageDescriptionEntity page = new PageDescriptionEntity();
+                        page.SetData(allEmbeddedInsideString);
+                        page.number = i + 1;
+                        loadDocumentEntity.SetPages(page);
+                        tabBeforeEdit.Dispose();
+                    }
+                }
             }
 
             return loadDocumentEntity;
