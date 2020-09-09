@@ -1,20 +1,23 @@
-﻿using GroupDocs.Editor.Options;
+﻿using GroupDocs.Editor.Formats;
+using GroupDocs.Editor.HtmlCss.Resources;
+using GroupDocs.Editor.Metadata;
 using GroupDocs.Editor.MVC.Products.Common.Entity.Web;
 using GroupDocs.Editor.MVC.Products.Common.Resources;
 using GroupDocs.Editor.MVC.Products.Common.Util.Comparator;
 using GroupDocs.Editor.MVC.Products.Editor.Config;
+using GroupDocs.Editor.MVC.Products.Editor.Entity.Web.Request;
+using GroupDocs.Editor.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using GroupDocs.Editor.MVC.Products.Editor.Entity.Web.Request;
-using GroupDocs.Editor.Formats;
 
 namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 {
@@ -24,11 +27,11 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class EditorApiController : ApiController
     {
-        private static Common.Config.GlobalConfiguration globalConfiguration = new Common.Config.GlobalConfiguration();
+        private static readonly Common.Config.GlobalConfiguration globalConfiguration = new Common.Config.GlobalConfiguration();
 
         /// <summary>
         /// Load Viewr configuration
-        /// </summary>       
+        /// </summary>
         /// <returns>Editor configuration</returns>
         [HttpGet]
         [Route("loadConfig")]
@@ -46,8 +49,9 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         [Route("loadFileTree")]
         public HttpResponseMessage loadFileTree(PostedDataEntity postedData)
         {
-            // get request body       
+            // get request body
             string relDirPath = postedData.path;
+
             // get file list from storage path
             try
             {
@@ -71,30 +75,30 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 foreach (string file in allFiles)
                 {
                     FileInfo fileInfo = new FileInfo(file);
+
                     // check if current file/folder is hidden
-                    if (fileInfo.Attributes.HasFlag(FileAttributes.Hidden) ||
-                        Path.GetFileName(file).Equals(Path.GetFileName(globalConfiguration.GetEditorConfiguration().GetFilesDirectory())) ||
-                        Path.GetFileName(file).Equals(".gitkeep"))
-                    {
-                        // ignore current file and skip to next one
-                        continue;
-                    }
-                    else
+                    if (!fileInfo.Attributes.HasFlag(FileAttributes.Hidden) &&
+                        !Path.GetFileName(file).Equals(Path.GetFileName(globalConfiguration.GetEditorConfiguration().GetFilesDirectory())) &&
+                        !Path.GetFileName(file).StartsWith("."))
                     {
                         FileDescriptionEntity fileDescription = new FileDescriptionEntity();
                         fileDescription.guid = Path.GetFullPath(file);
                         fileDescription.name = Path.GetFileName(file);
+
                         // set is directory true/false
                         fileDescription.isDirectory = fileInfo.Attributes.HasFlag(FileAttributes.Directory);
+
                         // set file size
                         if (!fileDescription.isDirectory)
                         {
                             fileDescription.size = fileInfo.Length;
                         }
+
                         // add object to array list
                         fileList.Add(fileDescription);
                     }
                 }
+
                 return Request.CreateResponse(HttpStatusCode.OK, fileList);
             }
             catch (Exception ex)
@@ -105,7 +109,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
         /// <summary>
         /// Load supported file types
-        /// </summary>       
+        /// </summary>
         /// <returns>Editor configuration</returns>
         [HttpGet]
         [Route("loadFormats")]
@@ -163,6 +167,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                     return response;
                 }
             }
+
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 
@@ -178,10 +183,12 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
             try
             {
                 string url = HttpContext.Current.Request.Form["url"];
+
                 // get documents storage path
                 string documentStoragePath = globalConfiguration.GetEditorConfiguration().GetFilesDirectory();
                 bool rewrite = bool.Parse(HttpContext.Current.Request.Form["rewrite"]);
                 string fileSavePath = "";
+
                 if (string.IsNullOrEmpty(url))
                 {
                     if (HttpContext.Current.Request.Files.AllKeys != null)
@@ -212,6 +219,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                         // get file name from the URL
                         Uri uri = new Uri(url);
                         string fileName = Path.GetFileName(uri.LocalPath);
+
                         if (rewrite)
                         {
                             // Get the complete file path
@@ -221,10 +229,12 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                         {
                             fileSavePath = Resources.GetFreeFileName(documentStoragePath, fileName);
                         }
+
                         // Download the Web resource and save it into the current filesystem folder.
                         client.DownloadFile(url, fileSavePath);
                     }
                 }
+
                 UploadedDocumentEntity uploadedDocument = new UploadedDocumentEntity();
                 uploadedDocument.guid = fileSavePath;
                 return Request.CreateResponse(HttpStatusCode.OK, uploadedDocument);
@@ -255,35 +265,30 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 string tempPath = Path.Combine(Path.GetDirectoryName(saveFilePath), tempFilename + Path.GetExtension(saveFilePath));
 
                 ILoadOptions loadOptions = GetLoadOptions(guid);
-                loadOptions.Password = password;
+                if (loadOptions != null)
+                {
+                    loadOptions.Password = password;
+                }
 
                 // Instantiate Editor object by loading the input file
                 using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
                 {
-                    dynamic editOptions = GetEditOptions(guid);
+                    EditableDocument htmlContentDoc = EditableDocument.FromMarkup(htmlContent, null);
+                    dynamic saveOptions = GetSaveOptions(guid);
 
-                    if (editOptions is WordProcessingEditOptions)
+                    if (!(saveOptions is TextSaveOptions))
                     {
-                        editOptions.EnablePagination = true;
-                        editOptions.FontExtraction = FontExtractionOptions.ExtractEmbeddedWithoutSystem;
-                        editOptions.EnableLanguageInformation = true;
+                        saveOptions.Password = password;
                     }
 
-                    using (EditableDocument beforeEdit = editor.Edit(editOptions))
+                    if (saveOptions is WordProcessingSaveOptions)
                     {
-                        EditableDocument htmlContentDoc = EditableDocument.FromMarkup(htmlContent, null);
-                        dynamic saveOptions = GetSaveOptions(guid);
-                        saveOptions.Password = password;
+                        saveOptions.EnablePagination = true;
+                    }
 
-                        if (saveOptions is WordProcessingSaveOptions)
-                        {
-                            saveOptions.EnablePagination = true;
-                        }
-
-                        using (FileStream outputStream = File.Create(tempPath))
-                        {
-                            editor.Save(htmlContentDoc, outputStream, saveOptions);
-                        }
+                    using (FileStream outputStream = File.Create(tempPath))
+                    {
+                        editor.Save(htmlContentDoc, outputStream, saveOptions);
                     }
                 }
 
@@ -295,6 +300,62 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 File.Move(tempPath, saveFilePath);
 
                 LoadDocumentEntity loadDocumentEntity = LoadDocument(saveFilePath, password);
+
+                // return document description
+                return Request.CreateResponse(HttpStatusCode.OK, loadDocumentEntity);
+            }
+            catch (Exception ex)
+            {
+                // set exception message
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new Resources().GenerateException(ex, postedData.getPassword()));
+            }
+        }
+
+        /// <summary>
+        /// Load document description
+        /// </summary>
+        /// <param name="postedData">Post data</param>
+        /// <returns>Document info object</returns>
+        [HttpPost]
+        [Route("createFile")]
+        public HttpResponseMessage CreateFile(EditDocumentRequest postedData)
+        {
+            try
+            {
+                string htmlContent = postedData.getContent();
+                string guid = postedData.GetGuid();
+                string saveFilePath = Path.Combine(globalConfiguration.GetEditorConfiguration().GetFilesDirectory(), guid);
+                string tempFilename = Path.GetFileNameWithoutExtension(saveFilePath) + "_tmp";
+                string tempPath = Path.Combine(Path.GetDirectoryName(saveFilePath), tempFilename + Path.GetExtension(saveFilePath));
+
+                File.Create(saveFilePath).Dispose();
+
+                using (EditableDocument newFile = EditableDocument.FromMarkup(htmlContent, null))
+                {
+                    using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(saveFilePath))
+                    {
+                        dynamic saveOptions = this.GetSaveOptions(saveFilePath);
+                        if (saveOptions is WordProcessingSaveOptions)
+                        {
+                            // TODO: saveOptions.EnablePagination = true here leads to exception
+                        }
+
+                        using (FileStream outputStream = File.Create(tempPath))
+                        {
+                            editor.Save(newFile, outputStream, saveOptions);
+                        }
+                    }
+                }
+
+                if (File.Exists(saveFilePath))
+                {
+                    File.Delete(saveFilePath);
+                }
+
+                File.Move(tempPath, saveFilePath);
+
+                LoadDocumentEntity loadDocumentEntity = LoadDocument(saveFilePath, "");
+
                 // return document description
                 return Request.CreateResponse(HttpStatusCode.OK, loadDocumentEntity);
             }
@@ -309,12 +370,6 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             string extension = Path.GetExtension(guid).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
-
-            if (extension.Equals("Txt"))
-            {
-                extension = "Text";
-            }
-
             ILoadOptions options = null;
 
             foreach (var item in typeof(WordProcessingFormats).GetFields())
@@ -331,9 +386,32 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 }
             }
 
-            if (options == null)
+            foreach (var item in typeof(PresentationFormats).GetFields())
             {
-                options = new SpreadsheetLoadOptions();
+                if (item.Name.Equals("Auto"))
+                {
+                    continue;
+                }
+
+                if (item.Name.Equals(extension))
+                {
+                    options = new PresentationLoadOptions();
+                    break;
+                }
+            }
+
+            foreach (var item in typeof(SpreadsheetFormats).GetFields())
+            {
+                if (item.Name.Equals("Auto"))
+                {
+                    continue;
+                }
+
+                if (item.Name.Equals(extension))
+                {
+                    options = new SpreadsheetLoadOptions();
+                    break;
+                }
             }
 
             return options;
@@ -343,31 +421,46 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             string extension = Path.GetExtension(guid).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
+            IEditOptions options = null;
 
             if (extension.Equals("Txt"))
             {
-                extension = "Text";
+                options = new TextEditOptions();
             }
-
-            IEditOptions options = null;
-
-            foreach (var item in typeof(WordProcessingFormats).GetFields())
+            else
             {
-                if (item.Name.Equals("Auto"))
+                foreach (var item in typeof(WordProcessingFormats).GetFields())
                 {
-                    continue;
+                    if (item.Name.Equals("Auto"))
+                    {
+                        continue;
+                    }
+
+                    if (item.Name.Equals(extension))
+                    {
+                        options = new WordProcessingEditOptions();
+                        break;
+                    }
                 }
 
-                if (item.Name.Equals(extension))
+                foreach (var item in typeof(PresentationFormats).GetFields())
                 {
-                    options = new WordProcessingEditOptions();
-                    break;
-                }
-            }
+                    if (item.Name.Equals("Auto"))
+                    {
+                        continue;
+                    }
 
-            if (options == null)
-            {
-                options = new SpreadsheetEditOptions();
+                    if (item.Name.Equals(extension))
+                    {
+                        options = new PresentationEditOptions();
+                        break;
+                    }
+                }
+
+                if (options == null)
+                {
+                    options = new SpreadsheetEditOptions();
+                }
             }
 
             return options;
@@ -377,30 +470,50 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             string extension = Path.GetExtension(guid).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
+            ISaveOptions options = null;
 
             if (extension.Equals("Txt"))
             {
-                extension = "Text";
+                options = new TextSaveOptions();
+            }
+            else
+            {
+                foreach (var item in typeof(WordProcessingFormats).GetFields())
+                {
+                    if (item.Name.Equals("Auto"))
+                    {
+                        continue;
+                    }
+                    if (item.Name.Equals(extension))
+                    {
+                        WordProcessingFormats format = WordProcessingFormats.FromExtension(extension);
+                        options = new WordProcessingSaveOptions(format);
+                        break;
+                    }
+                }
+
+                foreach (var item in typeof(PresentationFormats).GetFields())
+                {
+                    if (item.Name.Equals("Auto"))
+                    {
+                        continue;
+                    }
+
+                    if (item.Name.Equals(extension))
+                    {
+                        PresentationFormats format = PresentationFormats.FromExtension(extension);
+                        options = new PresentationSaveOptions(format);
+                        break;
+                    }
+                }
+
+                if (options == null)
+                {
+                    SpreadsheetFormats format = SpreadsheetFormats.FromExtension(extension);
+                    options = new SpreadsheetSaveOptions(format);
+                }
             }
 
-            ISaveOptions options = null;
-
-            foreach (var item in typeof(WordProcessingFormats).GetFields())
-            {
-                if (item.Name.Equals("Auto"))
-                {
-                    continue;
-                }
-                if (item.Name.Equals(extension))
-                {
-                    options = new WordProcessingSaveOptions(GetSaveFormat(guid));
-                    break;
-                }
-            }
-            if (options == null)
-            {
-                options = new SpreadsheetSaveOptions(GetSaveFormat(guid));
-            }
             return options;
         }
 
@@ -408,10 +521,10 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             string extension = Path.GetExtension(saveFilePath).Replace(".", "");
             extension = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(extension);
-            dynamic format = null;
+            dynamic format;
+
             switch (extension)
             {
-
                 case "Doc":
                     format = WordProcessingFormats.Doc;
                     break;
@@ -469,8 +582,8 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 default:
                     format = WordProcessingFormats.Docx;
                     break;
-
             }
+
             return format;
         }
 
@@ -478,65 +591,100 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
         {
             List<string> outputListItems = new List<string>();
 
-            foreach (var item in typeof(WordProcessingFormats).GetFields())
+            using (IEnumerator<WordProcessingFormats> sequenceEnum = WordProcessingFormats.All.GetEnumerator())
             {
-                if (item.Name.Equals("Auto"))
+                while (sequenceEnum.MoveNext())
                 {
-                    continue;
-                }
-
-                if (item.Name.Equals("Text"))
-                {
-                    outputListItems.Add("Txt");
-                }
-
-                else
-                {
-                    outputListItems.Add(item.Name);
+                    outputListItems.Add(sequenceEnum.Current.Extension);
                 }
             }
 
-            foreach (var item in typeof(SpreadsheetFormats).GetFields())
+            using (IEnumerator<SpreadsheetFormats> sequenceEnum = SpreadsheetFormats.All.GetEnumerator())
             {
-                if (item.Name.Equals("Auto"))
+                while (sequenceEnum.MoveNext())
                 {
-                    continue;
+                    outputListItems.Add(sequenceEnum.Current.Extension);
                 }
-
-                outputListItems.Add(item.Name);
             }
 
-            return outputListItems;
+            using (IEnumerator<PresentationFormats> sequenceEnum = PresentationFormats.All.GetEnumerator())
+            {
+                while (sequenceEnum.MoveNext())
+                {
+                    outputListItems.Add(sequenceEnum.Current.Extension);
+                }
+            }
+
+            return outputListItems.Distinct().ToList();
         }
 
         private LoadDocumentEntity LoadDocument(string guid, string password)
         {
             LoadDocumentEntity loadDocumentEntity = new LoadDocumentEntity();
+            loadDocumentEntity.SetGuid(guid);
             ILoadOptions loadOptions = GetLoadOptions(guid);
-            loadOptions.Password = password;
+            if (loadOptions != null)
+            {
+                loadOptions.Password = password;
+            }
 
             // Instantiate Editor object by loading the input file
             using (GroupDocs.Editor.Editor editor = new GroupDocs.Editor.Editor(guid, delegate { return loadOptions; }))
             {
+                IDocumentInfo documentInfo = editor.GetDocumentInfo(password);
+
                 dynamic editOptions = GetEditOptions(guid);
                 if (editOptions is WordProcessingEditOptions)
                 {
                     editOptions.EnablePagination = true;
+
+                    // Open input document for edit — obtain an intermediate document, that can be edited
+                    EditableDocument beforeEdit = editor.Edit(editOptions);
+                    string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
+                    PageDescriptionEntity page = new PageDescriptionEntity();
+                    page.SetData(allEmbeddedInsideString);
+                    loadDocumentEntity.SetPages(page);
+                    beforeEdit.Dispose();
                 }
+                else if (editOptions is SpreadsheetEditOptions)
+                {
+                    for (var i = 0; i < documentInfo.PageCount; i++)
+                    {
+                        // Let's create an intermediate EditableDocument from the i tab
+                        SpreadsheetEditOptions sheetEditOptions = new SpreadsheetEditOptions();
+                        sheetEditOptions.WorksheetIndex = i; // index is 0-based
+                        EditableDocument tabBeforeEdit = editor.Edit(sheetEditOptions);
 
-                // Open input document for edit — obtain an intermediate document, that can be edited
-                EditableDocument beforeEdit = editor.Edit(editOptions);
+                        // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
+                        // are embedded inside this string along with main textual content
+                        string allEmbeddedInsideString = tabBeforeEdit.GetEmbeddedHtml();
+                        PageDescriptionEntity page = new PageDescriptionEntity();
+                        page.SetData(allEmbeddedInsideString);
+                        page.number = i + 1;
+                        loadDocumentEntity.SetPages(page);
+                        tabBeforeEdit.Dispose();
+                    }
+                }
+                else if (editOptions is PresentationEditOptions)
+                {
+                    for (var i = 0; i < documentInfo.PageCount; i++)
+                    {
+                        // Create editing options
+                        PresentationEditOptions presentationEditOptions = new PresentationEditOptions();
+                        // Specify slide index from original document.
+                        editOptions.SlideNumber = i; // Because index is 0-based, it is 1st slide
+                        EditableDocument slideBeforeEdit = editor.Edit(presentationEditOptions);
 
-                // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
-                // are embedded inside this string along with main textual content
-                string allEmbeddedInsideString = beforeEdit.GetEmbeddedHtml();
-
-                loadDocumentEntity.SetGuid(guid);
-                PageDescriptionEntity page = new PageDescriptionEntity();
-                page.SetData(allEmbeddedInsideString);
-                loadDocumentEntity.SetPages(page);
-
-                beforeEdit.Dispose();
+                        // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
+                        // are embedded inside this string along with main textual content
+                        string allEmbeddedInsideString = slideBeforeEdit.GetEmbeddedHtml();
+                        PageDescriptionEntity page = new PageDescriptionEntity();
+                        page.SetData(allEmbeddedInsideString);
+                        page.number = i + 1;
+                        loadDocumentEntity.SetPages(page);
+                        slideBeforeEdit.Dispose();
+                    }
+                }
             }
 
             return loadDocumentEntity;
