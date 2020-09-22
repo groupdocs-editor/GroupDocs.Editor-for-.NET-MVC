@@ -286,6 +286,11 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                         saveOptions.EnablePagination = true;
                     }
 
+                    if (saveOptions is PresentationSaveOptions)
+                    {
+                        saveOptions.SlideNumber = postedData.getPageNumber();
+                    }
+
                     using (FileStream outputStream = File.Create(tempPath))
                     {
                         editor.Save(htmlContentDoc, outputStream, saveOptions);
