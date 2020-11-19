@@ -671,20 +671,18 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                 {
                     for (var i = 0; i < documentInfo.PageCount; i++)
                     {
-                        // Create editing options
-                        PresentationEditOptions presentationEditOptions = new PresentationEditOptions();
                         // Specify slide index from original document.
                         editOptions.SlideNumber = i; // Because index is 0-based, it is 1st slide
-                        EditableDocument slideBeforeEdit = editor.Edit(presentationEditOptions);
-
-                        // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
-                        // are embedded inside this string along with main textual content
-                        string allEmbeddedInsideString = slideBeforeEdit.GetEmbeddedHtml();
-                        PageDescriptionEntity page = new PageDescriptionEntity();
-                        page.SetData(allEmbeddedInsideString);
-                        page.number = i + 1;
-                        loadDocumentEntity.SetPages(page);
-                        slideBeforeEdit.Dispose();
+                        using (EditableDocument slideBeforeEdit = editor.Edit(editOptions))
+                        {
+                            // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
+                            // are embedded inside this string along with main textual content
+                            string allEmbeddedInsideString = slideBeforeEdit.GetEmbeddedHtml();
+                            PageDescriptionEntity page = new PageDescriptionEntity();
+                            page.SetData(allEmbeddedInsideString);
+                            page.number = i + 1;
+                            loadDocumentEntity.SetPages(page);
+                        }
                     }
                 }
             }
