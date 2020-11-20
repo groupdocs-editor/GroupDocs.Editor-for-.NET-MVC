@@ -47,8 +47,8 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="GroupDocs.Editor, Version=20.8.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
-      <HintPath>..\packages\GroupDocs.Editor.20.8.0\lib\net20\GroupDocs.Editor.dll</HintPath>
+    <Reference Include="GroupDocs.Editor, Version=20.10.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\GroupDocs.Editor.20.10.0\lib\net40\GroupDocs.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
@@ -278,7 +278,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
   </Target>
-  <Target Name="BeforeBuild">
+  <Target Name="BeforeBuild" DependsOnTargets="PrepareForBuild">
     <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit.11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit.11.1.0.1\npm\bin\npm-cli.js install" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec WorkingDirectory="client\" Command="..\..\packages\Node-Kit.11.1.0.1\node\win\node.exe ..\..\packages\Node-Kit.11.1.0.1\npm\bin\npm-cli.js run build  --scripts-prepend-node-path" Condition=" '$(OS)' == 'Windows_NT' " />
   </Target>
