@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -288,7 +289,7 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
 
                     if (saveOptions is PresentationSaveOptions)
                     {
-                        saveOptions.SlideNumber = postedData.getPageNumber();
+                        saveOptions.SlideNumber = postedData.getPageNumber() + 1;
                     }
 
                     using (FileStream outputStream = File.Create(tempPath))
@@ -679,6 +680,32 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                             // are embedded inside this string along with main textual content
                             string allEmbeddedInsideString = slideBeforeEdit.GetEmbeddedHtml();
                             PageDescriptionEntity page = new PageDescriptionEntity();
+                            if (allEmbeddedInsideString.IndexOf(".slide") > 0)
+                            {
+                                // TODO: extract from controller
+                                string regex = @"\.slide.{(.*?)}";
+                                Match match = Regex.Match(allEmbeddedInsideString, regex, RegexOptions.IgnoreCase);
+                                if (match.Success)
+                                {
+                                     string rules = match.Groups[1].Value.Trim().TrimEnd(';');
+                                    Dictionary<string, string> keyValuePairs = rules.Split(';')
+                                      .Select(value => value.Split(':'))
+                                      .ToDictionary(pair => pair[0].Trim(), pair => pair[1].Trim());
+
+                                    if (keyValuePairs.ContainsKey("height")) {
+                                        string height = string.Empty;
+                                        keyValuePairs.TryGetValue("height", out height);
+                                        page.height = Convert.ToDouble(height.Replace("pt", "").Replace("px", ""));
+                                    }
+
+                                    if (keyValuePairs.ContainsKey("width"))
+                                    {
+                                        string width = string.Empty;
+                                        keyValuePairs.TryGetValue("width", out width);
+                                        page.width = Convert.ToDouble(width.Replace("pt", "").Replace("px", ""));
+                                    }
+                                }
+                            }
                             page.SetData(allEmbeddedInsideString);
                             page.number = i + 1;
                             loadDocumentEntity.SetPages(page);
