@@ -286,6 +286,11 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                         saveOptions.EnablePagination = true;
                     }
 
+                    if (saveOptions is SpreadsheetSaveOptions)
+                    {
+                        saveOptions.WorksheetNumber = postedData.getPageNumber() + 1;
+                    }
+
                     using (FileStream outputStream = File.Create(tempPath))
                     {
                         editor.Save(htmlContentDoc, outputStream, saveOptions);
@@ -648,18 +653,17 @@ namespace GroupDocs.Editor.MVC.Products.Editor.Controllers
                     for (var i = 0; i < documentInfo.PageCount; i++)
                     {
                         // Let's create an intermediate EditableDocument from the i tab
-                        SpreadsheetEditOptions sheetEditOptions = new SpreadsheetEditOptions();
-                        sheetEditOptions.WorksheetIndex = i; // index is 0-based
-                        EditableDocument tabBeforeEdit = editor.Edit(sheetEditOptions);
+                        editOptions.WorksheetIndex = i; // index is 0-based
+                        EditableDocument sheetBeforeEdit = editor.Edit(editOptions);
 
                         // Get document as a single base64-encoded string, where all resources (images, fonts, etc) 
                         // are embedded inside this string along with main textual content
-                        string allEmbeddedInsideString = tabBeforeEdit.GetEmbeddedHtml();
+                        string allEmbeddedInsideString = sheetBeforeEdit.GetEmbeddedHtml();
                         PageDescriptionEntity page = new PageDescriptionEntity();
                         page.SetData(allEmbeddedInsideString);
                         page.number = i + 1;
                         loadDocumentEntity.SetPages(page);
-                        tabBeforeEdit.Dispose();
+                        sheetBeforeEdit.Dispose();
                     }
                 }
                 else if (editOptions is PresentationEditOptions)
