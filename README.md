@@ -95,6 +95,15 @@ For all methods above you can adjust settings in `configuration.yml`. By default
 | **`defaultDocument`**  | String  |                   | Absolute path to default document that will be loaded automatically.                                                                          |
 | **`createNewFile`**    | String  |                   | Enable / disable new document creation.                                                                                                     |
 
+## Troubleshooting
+### How to set custom baseURL
+BaseURL is fetched from address bar however you can set custom baseURL by adding *forRoot* parameter at [app.module.ts](https://github.com/groupdocs-editor/GroupDocs.Editor-for-.NET-MVC/blob/master/src/client/apps/editor/src/app/app.module.ts#L10)
+
+**Example:**
+```js
+ViewerModule.forRoot("http://localhost:8080")
+```
+
 ## License
 The MIT License (MIT). 
 
